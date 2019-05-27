@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+<!--配置service-->
+    <bean id="accountService" class="com.li.service.impl.IAccountServiceImpl">
+        <property name="accountDao" ref="AccountDao"/>
+        <property name="manager" ref="txManage"/>
+    </bean>
+
+    <!--配置Dao对象-->
+    <bean id="AccountDao" class="com.li.dao.impl.IAccountDaoImpl">
+        <property name="runner" ref="runner"/>
+        <!--注入ConnectionUtils-->
+        <property name="connectionUtils" ref="connectionUtils"/>
+    </bean>
+    <!--配置Runner对象-->
+    <bean id="runner" class="org.apache.commons.dbutils.QueryRunner" scope="prototype">
+        <!--注入数据源-->
+
+    </bean>
+    <!--配置数据源-->
+    <bean id="dateSource"
+          class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/text1"/>
+        <property name="user" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+<!--配置Connection的工具类-->
+    <bean id="connectionUtils" class="com.li.utils.ConnectionUtils">
+        <!--注入数据源-->
+        <property name="dataSource" ref="dateSource"/>
+     </bean>
+
+<!--配置事务管理器-->
+    <bean id="txManage" class="com.li.utils.TransactionManager">
+        <property name="connectionUtils" ref="connectionUtils"/>
+    </bean>
+
+
+
+</beans>
